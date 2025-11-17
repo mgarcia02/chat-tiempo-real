@@ -1,4 +1,5 @@
 import { signUpService, signInService } from "../services/auth.service.js"
+import { generateTokenAndSetCookie } from "../utils/generateToken.js"
 
 export const signUp = async (req, res, next) => {
     try {
@@ -8,11 +9,12 @@ export const signUp = async (req, res, next) => {
 
         generateTokenAndSetCookie(newUser._id, res)
 
-        return res.status(201).json(userDto)
+        return res.status(201).json({ user: newUser, message:"Usuario creado y sesión iniciada" })
     } catch (error) {
         next(error)
     }
 }
+
 export const signIn = async(req, res, next) => {
     try {
         const { userName, password } = req.body
@@ -21,16 +23,17 @@ export const signIn = async(req, res, next) => {
 
         generateTokenAndSetCookie(user._id, res)
 
-        return res.status(200).json(user) 
+        return res.status(200).json({ user: user, message:"Sesión iniciada" }) 
     } catch (error) {
         next(error)
     }
 }
+
 export const signOut = async (_req, res, next) => {
     try {
         res.cookie("token", "", {maxAge:0})
 
-        return res.status(200).json({message:"Logged out seccesfully"})
+        return res.status(200).json({ message:"Sesión cerrada" })
     } catch (error) {
         next(error)
     }
