@@ -1,9 +1,8 @@
 import User from "../models/user.model.js"
 import bcrypt from "bcryptjs"
-import generateTokenAndSetCookie from "../utils/generateToken.js"
 import { InvalidCredentialsError, UserAlreadyExistsError, ValidationError } from "../errors/errors.js"
 
-export const signupService = async (fullName, userName, password, confirmPassword, gender, res) => {
+export const signUpService = async (fullName, userName, password, confirmPassword, gender) => {
     if(password !== confirmPassword) throw new ValidationError("Password don't match")
     
     const user = await User.findOne({userName})
@@ -30,36 +29,26 @@ export const signupService = async (fullName, userName, password, confirmPasswor
         throw new ValidationError("Invalid user data")
     }
 
-    // Genrate JWT token here
-    generateTokenAndSetCookie(newUser._id, res)
-
     await newUser.save()
 
-    res.status(200).json({
+    return {
         _id: newUser._id,
         fullName: newUser.fullName,
         userName: newUser.userName,
         profilePic: newUser.profilePic
-    })
+    }
 }
 
-export const loginService = async(userName, password, res) => {    
+export const signInService = async(userName, password) => {    
     const user = await User.findOne({userName})
     const isPasswordCorrect = await bcrypt.compare(password, user?.password || "")
 
     if(!user || !isPasswordCorrect) throw new InvalidCredentialsError()
 
-    generateTokenAndSetCookie(user._id, res)
-
-    res.status(200).json({
+    return {
         _id: user._id,
         fullName: user.fullName,
         userName: user.userName,
         profilePic: user.profilePic
-    })
-}
-
-export const logoutService = async (res) => {
-    res.cookie("jwt", "", {maxAge:0})
-    res.status(200).json({message:"Logged out seccesfully"})
+    }
 }
