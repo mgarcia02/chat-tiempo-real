@@ -2,9 +2,11 @@ import { getUsersService } from "../services/user.service.js"
 
 export const getUsers = async (req, res, next) => {
     try {
-        const loggedInUserId = req.user._id
+        const userId = req.user._id
 
-        await getUsersService(loggedInUserId, res)
+        const users = await getUsersService(userId, res)
+
+        return res.status(201).json({ data: users, message:"Lista de usuarios disponible para hablar" })
     } catch (error) {
         next(error)
     }
