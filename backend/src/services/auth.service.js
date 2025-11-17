@@ -1,17 +1,13 @@
 import User from "../models/user.model.js"
 import bcrypt from "bcryptjs"
 import generateTokenAndSetCookie from "../utils/generateToken.js"
+import { InvalidCredentialsError, UserAlreadyExistsError, ValidationError } from "../errors/errors.js"
 
 export const signupService = async (fullName, userName, password, confirmPassword, gender, res) => {
-    if(password !== confirmPassword) {
-        return res.status(400).json({error:"Password don't match"})
-    }
+    if(password !== confirmPassword) throw new ValidationError("Password don't match")
     
     const user = await User.findOne({userName})
-    
-    if(user) {
-        return res.status(400).json({error:"Username alredy exists"})
-    }
+    if(user) throw new UserAlreadyExistsError()
 
     // Hash password here
     const salt = await bcrypt.genSalt(10)
@@ -31,7 +27,7 @@ export const signupService = async (fullName, userName, password, confirmPasswor
             profilePic: gender === "male" ? boyProfilePic : girlProfilePic
         })
     } catch (error) {
-        return res.status(400).json({error: "Invalid user data"})
+        throw new ValidationError("Invalid user data")
     }
 
     // Genrate JWT token here
@@ -51,9 +47,7 @@ export const loginService = async(userName, password, res) => {
     const user = await User.findOne({userName})
     const isPasswordCorrect = await bcrypt.compare(password, user?.password || "")
 
-    if(!user || !isPasswordCorrect) {
-        return res.status(400).json({error:"Invalid username or password"})
-    }
+    if(!user || !isPasswordCorrect) throw new InvalidCredentialsError()
 
     generateTokenAndSetCookie(user._id, res)
 

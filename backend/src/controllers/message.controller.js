@@ -1,6 +1,6 @@
 import { sendMessageService, getMessagesService } from "../services/message.service.js"
 
-export const sendMessage = async (req, res) => {
+export const sendMessage = async (req, res, next) => {
     try {
         const { message } = req.body
         const { id: receiverId } = req.params
@@ -8,19 +8,17 @@ export const sendMessage = async (req, res) => {
 
         await sendMessageService(message, receiverId, senderId, res)
     } catch (error) {
-        console.log("ERROR (Error in sendMessage controller):", error.message)
-        res.status(500).json({error:"Internal Server Error"})
+        next(error)
     }
 }
 
-export const getMessages = async (req, res) => {
+export const getMessages = async (req, res, next) => {
     try {
         const { id:userToChatId } = req.params
         const senderId = req.user._id
 
         await getMessagesService(userToChatId, senderId, res)
     } catch (error) {
-        console.log("ERROR (Error in getMessage controller):", error.message)
-        res.status(500).json({error:"Internal Server Error"})
+        next(error)
     }
 }

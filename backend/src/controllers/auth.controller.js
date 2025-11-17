@@ -1,31 +1,28 @@
 import { signupService, loginService, logoutService } from "../services/auth.service.js"
 
-export const signup = async (req, res) => {
+export const signup = async (req, res, next) => {
     try {
         const { fullName, userName, password, confirmPassword, gender } = req.body
         
         await signupService(fullName, userName, password, confirmPassword, gender, res)
     } catch (error) {
-        console.log("ERROR (Error in signup controller):", error.message)
-        return res.status(500).json({error:"Internal Server Error"})
+        next(error)
     }
 }
-export const login = async(req, res) => {
+export const login = async(req, res, next) => {
     try {
         const { userName, password } = req.body
 
-        loginService(userName, password, res)
+        await loginService(userName, password, res)
     } catch (error) {
-        console.log("ERROR (Error in login controller):", error)
-        return res.status(500).json({error:"Internal Server Error"})
+        next(error)
     }
 }
-export const logout = async (req, res) => {
+export const logout = async (_req, res, next) => {
     try {
-        logoutService(res)
+        await logoutService(res)
     } catch (error) {
-        console.log("ERROR (Error in logout controller):", error)
-        return res.status(500).json({error:"Internal Server Error"})
+        next(error)
     }
 }
 
