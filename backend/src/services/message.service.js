@@ -3,7 +3,7 @@ import Message from "../models/message.model.js"
 import { getReceiverSocketId } from "../socket/socket.js"
 import { io } from "../socket/socket.js"
 
-export const sendMessageService = async (message, receiverId, senderId, res) => {
+export const sendMessageService = async (message, receiverId, senderId) => {
     let conversation = await Conversation.findOne({
         participants: {$all: [senderId, receiverId]} // La condición $all verifica que todos los elementos del array participants coincidan con los valores de senderId y receiverId.
     })
@@ -34,14 +34,14 @@ export const sendMessageService = async (message, receiverId, senderId, res) => 
         io.to(receiverSocketId).emit("newMessage", newMessage)
     }
 
-    res.status(200).json(newMessage)
+    return newMessage
 }
 
-export const getMessagesService = async (userToChatId, senderId, res) => {
+export const getMessagesService = async (userToChatId, senderId) => {
     const conversation = await Conversation.findOne({
         participants: {$all: [senderId, userToChatId]} // La condición $all verifica que todos los elementos del array participants coincidan con los valores de senderId y receiverId.
-    }).populate("messages") // Permite cargar los mensajes relacionados con una conversación específica, lo que facilita el acceso a los datos relacionados en tu aplicación.
-    if(!conversation) return res.status(200).json([])
+    }).populate("messages")
+    if(!conversation) return []
 
-    res.status(200).json(conversation.messages)
+    return conversation.messages
 }

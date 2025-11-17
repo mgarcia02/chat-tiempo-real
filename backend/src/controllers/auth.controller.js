@@ -9,7 +9,7 @@ export const signUp = async (req, res, next) => {
 
         generateTokenAndSetCookie(newUser._id, res)
 
-        return res.status(201).json({ user: newUser, message:"Usuario creado y sesión iniciada" })
+        return res.status(201).json({ data: newUser, message:"Usuario creado y sesión iniciada" })
     } catch (error) {
         next(error)
     }
@@ -23,7 +23,7 @@ export const signIn = async(req, res, next) => {
 
         generateTokenAndSetCookie(user._id, res)
 
-        return res.status(200).json({ user: user, message:"Sesión iniciada" }) 
+        return res.status(200).json({ data: user, message:"Sesión iniciada" }) 
     } catch (error) {
         next(error)
     }
