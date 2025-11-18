@@ -1,11 +1,9 @@
 import User from "../models/user.model.js"
 import bcrypt from "bcryptjs"
-import { InvalidCredentialsError, UserAlreadyExistsError, ValidationError } from "../errors/errors.js"
+import { InvalidCredentialsError, UserAlreadyExistsError } from "../errors/errors.js"
 import mapDBErrors from "../errors/mapDBErrors.js"
 
-export const signUpService = async (fullName, userName, password, confirmPassword, gender) => {
-    if(password !== confirmPassword) throw new ValidationError("Password don't match")
-    
+export const signUpService = async (fullName, userName, password, gender) => {
     const user = await User.findOne({userName})
     if(user) throw new UserAlreadyExistsError()
 
