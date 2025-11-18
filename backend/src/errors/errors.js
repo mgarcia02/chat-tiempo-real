@@ -1,5 +1,4 @@
 class AppError extends Error {
-    statusCode
     constructor(message, statusCode) {
         super(message)
         this.statusCode = statusCode
@@ -22,7 +21,6 @@ class UnauthorizedError extends AppError {
 
 /* Valiacion */
 class ValidationError extends AppError {
-    details
     constructor(details) {
         super("Validation failed", 400)
         this.details = details
@@ -48,6 +46,19 @@ class UserNotFoundError extends AppError {
     }
 }
 
+/* Base de datos */
+class DBError extends AppError {
+    constructor() {
+        super("Error de base de datos", 500)
+    }
+}
+
+class DBConnectionError extends AppError {
+    constructor() {
+        super("Error de conexión con la base de datos", 503)
+    }
+}
+
 export { 
     AppError, 
     // Autenticacion & Autorizacion
@@ -56,4 +67,6 @@ export {
     ValidationError, 
     // URLs & Usuarios
     NotFoundError, UserAlreadyExistsError, UserNotFoundError, 
+    // Base de datos
+    DBError, DBConnectionError
 }

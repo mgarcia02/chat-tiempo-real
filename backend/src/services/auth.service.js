@@ -1,6 +1,7 @@
 import User from "../models/user.model.js"
 import bcrypt from "bcryptjs"
 import { InvalidCredentialsError, UserAlreadyExistsError, ValidationError } from "../errors/errors.js"
+import mapDBErrors from "../errors/mapDBErrors.js"
 
 export const signUpService = async (fullName, userName, password, confirmPassword, gender) => {
     if(password !== confirmPassword) throw new ValidationError("Password don't match")
@@ -15,21 +16,19 @@ export const signUpService = async (fullName, userName, password, confirmPasswor
     const boyProfilePic = `https://avatar.iran.liara.run/public/boy?username=${userName}`
     const girlProfilePic = `https://avatar.iran.liara.run/public/girl?username=${userName}`
 
-    // Valid if the fields are correct
-    let newUser = new User()
-    try {
-        newUser = new User({
-            fullName: fullName,
-            userName: userName,
-            password: hashedPassword,
-            gender: gender,
-            profilePic: gender === "male" ? boyProfilePic : girlProfilePic
-        })
-    } catch (error) {
-        throw new ValidationError("Invalid user data")
-    }
+    const newUser = new User({
+        fullName: fullName,
+        userName: userName,
+        password: hashedPassword,
+        gender: gender,
+        profilePic: gender === "male" ? boyProfilePic : girlProfilePic
+    })
 
-    await newUser.save()
+    try {
+        await newUser.save();
+    } catch (error) {
+        throw mapDBErrors(error);
+    }
 
     return {
         _id: newUser._id,
