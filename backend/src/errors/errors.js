@@ -9,40 +9,39 @@ class AppError extends Error {
 /* Autenticacion & Autorizacion */
 class InvalidCredentialsError extends AppError {
     constructor() {
-        super("Invalid username or password", 401)
+        super("Nombre de usuario o contraseña incorrectos", 401)
     }
 }
 
 class UnauthorizedError extends AppError {
     constructor() {
-        super("Unauthorized - Token missing or invalid", 401)
+        super("No autorizado - el token no se encuentra o es inválido", 401)
     }
 }
 
 /* Valiacion */
 class ValidationError extends AppError {
     constructor(details) {
-        super("Validation failed", 400)
-        this.details = details
+        super(details, 400)
     }
 }
 
 /* Usuarios */
 class NotFoundError extends AppError {
     constructor() {
-        super(`Not found`, 404)
+        super("El recurso solicitado no existe", 404)
     }
 }
 
 class UserAlreadyExistsError extends AppError {
     constructor() {
-        super("User already exists", 409)
+        super("El usuario ya existe", 409)
     }
 }
 
 class UserNotFoundError extends AppError {
     constructor() {
-        super("User not found", 404)
+        super("Usuario no encontrado", 404)
     }
 }
 
