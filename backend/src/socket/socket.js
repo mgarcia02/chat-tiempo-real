@@ -12,25 +12,32 @@ const io = new Server(server, {
     }
 })
 
-export const getReceiverSocketId = (receiverId) => {
-    return userSocketMap[receiverId]
-}
-
 const userSocketMap = {}
 
+export const getSocketId = (id) => {
+    return userSocketMap[id]
+}
+
+export const sendMessageRealTime = (senderId, receiverId, message) => {
+    const receiverSocketId = getSocketId(receiverId)
+    if (receiverSocketId) {
+        io.to(receiverSocketId).emit("newMessage", message)
+    }
+
+    // Confirmación al emisor
+    const senderSocketId = getSocketId(senderId)
+    if (senderSocketId) {
+        io.to(senderSocketId).emit("messageDelivered", message)
+    }
+}
+
 io.on('connection', (socket) => {
-    // console.log("INFO: A user connected", socket.id)
-
     const userId = socket.handshake.query.userId
-    if(userId != "undefined") userSocketMap[userId] = socket.id;
+    if(userId) userSocketMap[userId] = socket.id;
 
-    // io.emit is used to send events to all the connected clients
     io.emit("getOnlineUsers", Object.keys(userSocketMap))
 
-    // socket.on() is used to listen to the events. Can be used both on client and server side
     socket.on("disconnect", () => {
-        // console.log("INFO: A user diconnected", socket.id)
-
         delete userSocketMap[userId]
         io.emit("getOnlineUsers", Object.keys(userSocketMap))
     })

@@ -1,14 +1,14 @@
-import { sendMessageService, getMessagesService } from "../services/message.service.js"
+import { createMessageService, getMessagesService } from "../services/message.service.js"
 
-export const sendMessage = async (req, res, next) => {
+export const createMessage = async (req, res, next) => {
     try {
         const { message } = req.body
         const { id: receiverId } = req.params
         const senderId = req.user._id
 
-        const newMessage = await sendMessageService(message, receiverId, senderId)
+        const newMessage = await createMessageService(message, receiverId, senderId)
 
-        return res.status(201).json({ data: newMessage, message:"Mensage enviado correctamente" })
+        return res.status(201).json({ data: newMessage._id, message:"Mensage creado correctamente" })
     } catch (error) {
         next(error)
     }
