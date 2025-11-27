@@ -18,11 +18,15 @@ export const createMessageService = async (message, receiverId, senderId) => {
         receiverId: receiverId,
         message: message
     })
-    await newMessage.save()
+    try {
+        await newMessage.save();
 
-    // Actualiza conversación y guarda
-    conversation.messages.push(newMessage._id)
-    await conversation.save()
+        // Actualiza conversación y guarda
+        conversation.messages.push(newMessage._id)
+        await conversation.save()
+    } catch (error) {
+        throw mapDBErrors(error);
+    }
 
     // Envia mensaje
     sendMessageRealTime(senderId, receiverId, newMessage)
