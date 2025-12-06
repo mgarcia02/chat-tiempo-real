@@ -1,9 +1,10 @@
 import './styles/index.css'
+import AppRouter from './router/AppRouter'
 
 function App() {
   return (
     <>
-      <p className='font-bold text-green-600'>Hola Mundo</p>
+      <AppRouter />
     </>
   )
 }
