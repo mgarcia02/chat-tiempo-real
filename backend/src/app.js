@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser"
 import cors from "cors"
 
 import authRoutes from "./routes/auth.routes.js"
-import messageRoutes from "./routes/message.routes.js"
+import conversationRoutes from "./routes/conversation.routes.js"
 import userRoutes from "./routes/user.routes.js"
 
 import errorHandler from "./middleware/errorHandler.js"
@@ -29,7 +29,7 @@ app.use(cookieParser())
 
 // Rutas principales de la API
 app.use("/api/auth", authRoutes)
-app.use("/api/messages", messageRoutes)
+app.use("/api/conversations", conversationRoutes)
 app.use("/api/users", userRoutes)
 
 // Middleware global de manejo de errores

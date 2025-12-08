@@ -1,4 +1,4 @@
-import { createMessageService, getMessagesService } from "../services/message.service.js"
+import { createMessageService, getConversationService, getActiveConversationsService } from "../services/conversation.service.js"
 
 export const createMessage = async (req, res, next) => {
     try {
@@ -14,14 +14,26 @@ export const createMessage = async (req, res, next) => {
     }
 }
 
-export const getMessages = async (req, res, next) => {
+export const getConversation = async (req, res, next) => {
     try {
         const { id:userToChatId } = req.params
         const senderId = req.user._id
 
-        const conversation = await getMessagesService(userToChatId, senderId)
+        const conversation = await getConversationService(userToChatId, senderId)
 
         return res.status(201).json({ data: conversation, message:"Coneversación obtenida correctamente" })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const getActiveConversations = async (req, res, next) => {
+    try {
+        const userId = req.user._id
+
+        const conversations = await getActiveConversationsService(userId)
+
+        return res.status(200).json({ data: conversations, message: "Conversaciones activas obtenidas correctamente"})
     } catch (error) {
         next(error)
     }

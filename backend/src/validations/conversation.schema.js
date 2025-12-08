@@ -7,7 +7,7 @@ export const sendMessageBodySchema = z
     })
 
 
-export const messageParamsSchema = z
+export const conversationParamsSchema = z
     .object({
         id: z.string().trim().regex(/^[0-9a-fA-F]{24}$/, "El id debe ser un ObjectId válido")
     })

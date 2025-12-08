@@ -34,11 +34,19 @@ export const createMessageService = async (message, receiverId, senderId) => {
     return newMessage
 }
 
-export const getMessagesService = async (userToChatId, senderId) => {
+export const getConversationService = async (userToChatId, senderId) => {
     const conversation = await Conversation.findOne({
         participants: {$all: [senderId, userToChatId]}
     }).populate("messages")
     if(!conversation) return []
 
     return conversation.messages
+}
+
+export const getActiveConversationsService = async (userId) => {
+    const conversations = await Conversation.find({
+        participants: userId
+    }).populate("messages")
+
+    return conversations
 }
