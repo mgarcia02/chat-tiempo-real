@@ -1,3 +1,5 @@
+import SignOutButton from "./SignOutButton"
+
 const Sidebar = () => {
     return (
         <div className="flex flex-col gap-5">
@@ -5,7 +7,7 @@ const Sidebar = () => {
                 <div className="w-10 h-10 rounded-full bg-slate-600"></div>
                 <div className="flex gap-2">
                     <button>Config</button>
-                    <button>Sign Out</button>
+                    <SignOutButton />
                 </div>
             </header>
 

@@ -7,7 +7,17 @@ import { signUpService, signInService, signOutService } from '../services/authSe
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
-    const [authUser, setAuthUser] = useState<AuthUser | null>(null)
+    const getInitialUser = (): AuthUser | null => {
+        try {
+            const storedUser = localStorage.getItem("user")
+            return storedUser ? JSON.parse(storedUser) : null
+        } catch {
+            localStorage.removeItem("user")
+            return null
+        }
+    }
+    const [authUser, setAuthUser] = useState<AuthUser | null>(getInitialUser)
+
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
@@ -17,6 +27,7 @@ const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
             const { data, error } = await signUpService(obj)
             if (error) throw new Error(error)
 
+            localStorage.setItem("user", JSON.stringify(data))
             setAuthUser(data)
 
             toast.success("¡Bienvenido " + data.userName + "!")
@@ -34,6 +45,7 @@ const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
             const { data, error } = await signInService(obj)
             if (error) throw new Error(error)
 
+            localStorage.setItem("user", JSON.stringify(data))
             setAuthUser(data)
 
             toast.success("¡Bienvenido " + data.userName + "!")
@@ -47,17 +59,19 @@ const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
 
     const signOut = async () => {
         try {
-        setLoading(true)
-        const error = await signOutService()
-        if (error) throw new Error(error)
+            setLoading(true)
+            const error = await signOutService()
+            if (error) throw new Error(error)
 
-        toast.success("Sesión cerrada. ¡Hasta pronto " + authUser?.userName + "!")
+            localStorage.removeItem("user")
+            setAuthUser(null)
 
-        setAuthUser(null)
+            toast.success("Sesión cerrada. ¡Hasta pronto " + authUser?.userName + "!")
+            navigate("/signin")
         } catch (e: unknown) {
-        toast.error(e instanceof Error ? e.message : "Error desconocido")
+            toast.error(e instanceof Error ? e.message : "Error desconocido")
         } finally {
-        setLoading(false)
+            setLoading(false)
         }
     };
 

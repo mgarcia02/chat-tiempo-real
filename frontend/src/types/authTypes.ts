@@ -4,9 +4,11 @@ export interface SignInDTO {
 }
 
 export interface SignUpDTO {
+    fullName: string
     userName: string
-    email: string
     password: string
+    confirmPassword: string
+    gender: string
 }
 
 export interface AuthUser {
