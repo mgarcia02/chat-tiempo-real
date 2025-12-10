@@ -12,9 +12,12 @@ export interface SignUpDTO {
 }
 
 export interface AuthUser {
+    _id: string
     userName: string
-    email: string
+    fullName?: string
+    profilePic?: string
 }
+
 
 export interface AuthContextType {
     authUser: AuthUser | null

@@ -1,4 +1,9 @@
-const ChatWindow = () => {
+import type { ChatWindowProps } from "../types/conversationTypes"
+import { useAuthContext } from "../hooks/useAuthContext"
+
+const ChatWindow = ({ conversation }: ChatWindowProps) => {
+    const {authUser} = useAuthContext()
+
     return (
         <div className="flex flex-col h-full">
             <header className="flex justify-between p-5 bg-slate-400">
@@ -14,43 +19,18 @@ const ChatWindow = () => {
             
             <section className="flex-1 h-screen p-5 overflow-y-auto">
                 <ul className="space-y-5">
-                    <li className="flex justify-start">
-                        <div className="max-w-md p-2 bg-white rounded shadow">
-                            Hola Mario!
-                        </div>
-                    </li>
-
-                    <li className="flex justify-end">
-                        <div className="max-w-md p-2 bg-blue-200 rounded">
-                            Qué tal?
-                        </div>
-                    </li>
-
-                    <li className="flex justify-start">
-                        <div className="max-w-md p-2 bg-white rounded shadow">
-                            Todo bien! y tu? Lorem ipsum dolor sit amet consectetur, adipisicing elit. Odit voluptatibus voluptatem minima, unde, ab modi eum possimus asperiores laborum tempora impedit, rem numquam doloremque incidunt nemo iure quis fuga dolore.
-                        </div>
-                    </li>
-                    <li className="flex justify-end">
-                        <div className="max-w-md p-2 bg-blue-200 rounded">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum amet itaque explicabo dolores, dolorem doloremque, repellendus error, sunt a incidunt nulla voluptatibus distinctio debitis ratione adipisci provident eum mollitia voluptate!
-                        </div>
-                    </li>
-                    <li className="flex justify-start">
-                        <div className="max-w-md p-2 bg-white rounded shadow">
-                            Todo bien! y tu? Lorem ipsum dolor sit amet consectetur, adipisicing elit. Odit voluptatibus voluptatem minima, unde, ab modi eum possimus asperiores laborum tempora impedit, rem numquam doloremque incidunt nemo iure quis fuga dolore.
-                        </div>
-                    </li>
-                    <li className="flex justify-end">
-                        <div className="max-w-md p-2 bg-blue-200 rounded">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum amet itaque explicabo dolores, dolorem doloremque, repellendus error, sunt a incidunt nulla voluptatibus distinctio debitis ratione adipisci provident eum mollitia voluptate!
-                        </div>
-                    </li>
-                    <li className="flex justify-end">
-                        <div className="max-w-md p-2 bg-blue-200 rounded">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorum amet itaque explicabo dolores, dolorem doloremque, repellendus error, sunt a incidunt nulla voluptatibus distinctio debitis ratione adipisci provident eum mollitia voluptate!
-                        </div>
-                    </li>
+                    {conversation?.messages.map((message) => (
+                        <li
+                        key={message._id}
+                        className={`flex ${message.senderId === authUser?._id ? "justify-end" : "justify-start"}`}
+                        >
+                            <div
+                                className={`max-w-md p-2 rounded shadow ${message.senderId === authUser?._id ? "bg-blue-200" : "bg-white"}`}
+                            >
+                                {message.message}
+                            </div>
+                        </li>
+                    ))}
                 </ul>
             </section>
 

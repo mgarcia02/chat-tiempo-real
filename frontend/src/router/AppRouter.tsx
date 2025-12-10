@@ -5,7 +5,7 @@ import SignUp from "../views/SignUp.tsx"
 import { useAuthContext } from "../hooks/useAuthContext.ts"
 
 const AppRouter = () => {
-    const { authUser } = useAuthContext();
+    const { authUser } = useAuthContext()
 
     return (
         <Routes>

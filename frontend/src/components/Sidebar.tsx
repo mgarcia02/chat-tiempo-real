@@ -1,6 +1,7 @@
 import SignOutButton from "./SignOutButton"
+import type { SidebarProps } from "../types/conversationTypes"
 
-const Sidebar = () => {
+const Sidebar = ({ conversations, loading, onSelectedConversation }: SidebarProps) => {
     return (
         <div className="flex flex-col gap-5">
             <header className="flex justify-between p-5 border-r-2 bg-slate-400">
@@ -13,25 +14,25 @@ const Sidebar = () => {
 
             <section className="flex flex-col gap-5 px-5">
                 <h2>Chats activos</h2>
+                {loading && <p>Loading...</p>}
+                {conversations.map((conv) => (
+                    <div
+                        key={conv._id}
+                        className="flex items-center gap-5"
+                        onClick={() => onSelectedConversation(conv)}
+                    >
+                        <div className="w-10 h-10 rounded-full bg-slate-600"></div>
+                        <div>
+                            <h3>{conv.participants[1].userName}</h3>
+                            <p className="text-sm text-gray-400">Ultimo mensaje</p>
+                        </div>
+                    </div>
+                ))}
                 <div className="flex items-center gap-5">
                     <div className="w-10 h-10 rounded-full bg-slate-600"></div>
                     <div>
                         <h3>Chat 1</h3>
                         <p className="text-sm text-gray-400">Ultimo mensaje</p>
-                    </div>
-                </div>
-                <div className="flex items-center gap-5">
-                    <div className="w-10 h-10 rounded-full bg-slate-600"></div>
-                    <div>
-                        <h3>Chat 2</h3>
-                        <p className="text-sm text-gray-400">Hola buenas tades...</p>
-                    </div>
-                </div>
-                <div className="flex items-center gap-5">
-                    <div className="w-10 h-10 rounded-full bg-slate-600"></div>
-                    <div>
-                        <h3>Chat 3</h3>
-                        <p className="text-sm text-gray-400">JAJAJAJAJA</p>
                     </div>
                 </div>
             </section>
