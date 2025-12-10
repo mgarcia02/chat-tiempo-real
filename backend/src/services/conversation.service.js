@@ -46,6 +46,9 @@ export const getConversationService = async (userToChatId, senderId) => {
 export const getActiveConversationsService = async (userId) => {
     const conversations = await Conversation.find({
         participants: userId
+    }).populate({
+        path: "participants",
+        select: "_id userName profilePic"
     }).populate("messages")
 
     return conversations
