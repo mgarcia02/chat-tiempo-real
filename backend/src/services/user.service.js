@@ -5,3 +5,9 @@ export const getUsersService = async (userId) => {
 
         return filteredUsers
 }
+
+export const getUserByIdService = async (userId) => {
+        const user = await User.findById(userId).select("-password")
+
+        return user
+}
