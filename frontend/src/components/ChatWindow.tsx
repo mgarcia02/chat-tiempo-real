@@ -3,13 +3,22 @@ import { useAuthContext } from "../hooks/useAuthContext"
 
 const ChatWindow = ({ conversation }: ChatWindowProps) => {
     const {authUser} = useAuthContext()
+    const receiver = conversation?.participants.find(
+        (p) => p._id !== authUser?._id
+    )
+    
+    if (!conversation) return (
+        <div className="flex items-center justify-center h-full">
+            <p>Selecciona una conversación</p>
+        </div>
+    )
 
     return (
         <div className="flex flex-col h-full">
             <header className="flex justify-between p-5 bg-slate-400">
                 <div className="flex items-center gap-5">
                     <div className="w-10 h-10 rounded-full bg-slate-600"></div>
-                    <h3>Chat 1</h3>
+                    <h3>{ receiver?.userName }</h3>
                 </div>
                 <div className="flex gap-2">
                     <button>Buscar</button>

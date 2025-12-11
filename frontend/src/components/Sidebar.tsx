@@ -24,17 +24,10 @@ const Sidebar = ({ conversations, loading, onSelectedConversation }: SidebarProp
                         <div className="w-10 h-10 rounded-full bg-slate-600"></div>
                         <div>
                             <h3>{conv.participants[1].userName}</h3>
-                            <p className="text-sm text-gray-400">Ultimo mensaje</p>
+                            <p className="text-xs text-gray-400">{conv.messages[conv.messages.length - 1].message}</p>
                         </div>
                     </div>
                 ))}
-                <div className="flex items-center gap-5">
-                    <div className="w-10 h-10 rounded-full bg-slate-600"></div>
-                    <div>
-                        <h3>Chat 1</h3>
-                        <p className="text-sm text-gray-400">Ultimo mensaje</p>
-                    </div>
-                </div>
             </section>
 
             <section className="flex flex-col gap-5 px-5">
