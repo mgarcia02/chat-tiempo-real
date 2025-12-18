@@ -1,10 +1,8 @@
 import type { ChatWindowProps } from "../types/conversationTypes"
-import { useAuthContext } from "../hooks/useAuthContext"
 
-const ChatWindow = ({ conversation }: ChatWindowProps) => {
-    const {authUser} = useAuthContext()
+const ChatWindow = ({ actualUser, conversation }: ChatWindowProps) => {
     const receiver = conversation?.participants.find(
-        (p) => p._id !== authUser?._id
+        (p) => p._id !== actualUser?._id
     )
     
     if (!conversation) return (
@@ -31,10 +29,10 @@ const ChatWindow = ({ conversation }: ChatWindowProps) => {
                     {conversation?.messages.map((message) => (
                         <li
                         key={message._id}
-                        className={`flex ${message.senderId === authUser?._id ? "justify-end" : "justify-start"}`}
+                        className={`flex ${message.senderId === actualUser?._id ? "justify-end" : "justify-start"}`}
                         >
                             <div
-                                className={`max-w-md p-2 rounded shadow ${message.senderId === authUser?._id ? "bg-blue-200" : "bg-white"}`}
+                                className={`max-w-md p-2 rounded shadow ${message.senderId === actualUser?._id ? "bg-blue-200" : "bg-white"}`}
                             >
                                 {message.message}
                             </div>

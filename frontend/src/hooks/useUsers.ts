@@ -1,11 +1,10 @@
-// hooks/useConversations.ts
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
-import { getActiveConversationsService } from "../services/conversationService"
-import type { Conversation } from "../types/conversationTypes"
+import { getUsersService } from "../services/userService"
+import type { User } from "../types/userTypes"
 
-export const useConversations = () => {
-    const [conversations, setConversations] = useState<Conversation[]>([])
+export const useUsers = () => {
+    const [users, setUsers] = useState<User[]>([])
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
@@ -13,20 +12,18 @@ export const useConversations = () => {
             try {
                 setLoading(true)
 
-                const { data, error } = await getActiveConversationsService()
+                const { data, error } = await getUsersService()
                 if (error) throw new Error(error)
                 
-                setConversations(data)
-                
+                setUsers(data)                
             } catch (e: unknown) {
                 toast.error(e instanceof Error ? e.message : "Error desconocido")
             } finally {
                 setLoading(false)
             }
         }
-
         fetchConversations()
     }, [])
 
-    return { conversations, loadingConversations: loading }
+    return { users, loadingUsers: loading }
 }

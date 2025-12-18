@@ -10,19 +10,23 @@ export type Message = {
 }
 
 export type Conversation = {
-    _id: string
+    _id?: string
     participants: User[]
     messages: Message[]
-    createdAt: string
-    updatedAt: string
+    createdAt?: string
+    updatedAt?: string
 }
 
 export type SidebarProps = {
+    actualUser: User
     conversations: Conversation[]
-    loading: boolean
+    loadingConversations: boolean
+    contacts: User[]
+    loadingUsers: boolean
     onSelectedConversation: (conv: Conversation) => void
 }
 
 export type ChatWindowProps = {
+    actualUser: User
     conversation: Conversation | null
 }

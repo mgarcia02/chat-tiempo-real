@@ -19,3 +19,15 @@ export const getMeService = async() => {
         return { data: null, error: "Error desconocido"}
     }
 }
+
+export const getUsersService = async() => {
+    try {
+        const res = await api.get('/')
+        return { data: res.data.data, error: null }
+    } catch (e: unknown) {
+        if (axios.isAxiosError(e)) {
+            return { data: null, error: e.response?.data?.message || "Error en la red"}
+        }
+        return { data: null, error: "Error desconocido"}
+    }
+}
