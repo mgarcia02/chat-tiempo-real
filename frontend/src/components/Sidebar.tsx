@@ -1,7 +1,19 @@
+import { useAuthContext } from "../hooks/useAuthContext"
+import { useGlobalStore } from "../store/useGlobalStore"
 import SignOutButton from "./SignOutButton"
-import type { SidebarProps } from "../types/conversationTypes"
 
-const Sidebar = ({ actualUser, conversations, loadingConversations, contacts, loadingUsers, onSelectedConversation }: SidebarProps) => {
+const Sidebar = () => {
+    const { authUser: actualUser } = useAuthContext()
+    const conversations = useGlobalStore((state) => state.conversations)
+    const users = useGlobalStore((state) => state.users)
+    const setSelectedConversation = useGlobalStore((state) => state.setSelectedConversation)
+
+    if (!actualUser || !conversations || !users) return <p>Loading...</p>
+
+    // IDs de los usuarios con los que ya tienes conversación
+    const activeConversations = new Set(conversations.map((conv) => conv.participants.find((p) => p._id !== actualUser?._id)?._id))
+    // Filtrar usuarios que no están en conversaciones activas
+    const contacts = users.filter(u => !activeConversations.has(u._id))
 
     return (
         <div className="flex flex-col gap-5">
@@ -15,7 +27,6 @@ const Sidebar = ({ actualUser, conversations, loadingConversations, contacts, lo
 
             <section className="flex flex-col gap-5 px-5">
                 <h2>Chats activos</h2>
-                {loadingConversations && <p>Loading...</p>}
                 {conversations.map((conv) => {
                     const receiver = conv.participants.find(
                         (p) => p._id !== actualUser?._id
@@ -25,7 +36,7 @@ const Sidebar = ({ actualUser, conversations, loadingConversations, contacts, lo
                         <div
                             key={conv._id}
                             className="flex items-center gap-5"
-                            onClick={() => onSelectedConversation(conv)}
+                            onClick={() => setSelectedConversation(conv)}
                         >
                             <div className="w-10 h-10 rounded-full bg-slate-600"></div>
                             <div>
@@ -39,12 +50,11 @@ const Sidebar = ({ actualUser, conversations, loadingConversations, contacts, lo
 
             <section className="flex flex-col gap-5 px-5">
                 <h2>Contactos</h2>
-                {loadingUsers && <p>Loading...</p>}
                 {contacts.map((contact) => (
                     <div 
                         key={contact._id} 
                         className="flex items-center gap-5"
-                        onClick={() => onSelectedConversation({
+                        onClick={() => setSelectedConversation({
                             participants: [contact, actualUser],
                             messages: []
                         })}

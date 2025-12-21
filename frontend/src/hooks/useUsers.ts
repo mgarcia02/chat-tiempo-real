@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import { getUsersService } from "../services/userService"
-import type { User } from "../types/userTypes"
+import { useGlobalStore } from "../store/useGlobalStore"
 
 export const useUsers = () => {
-    const [users, setUsers] = useState<User[]>([])
+    const setUsers = useGlobalStore((state) => state.setUsers)
     const [loading, setLoading] = useState(false)
 
     useEffect(() => {
@@ -23,7 +23,8 @@ export const useUsers = () => {
             }
         }
         fetchConversations()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    return { users, loadingUsers: loading }
+    return { loadingUsers: loading }
 }

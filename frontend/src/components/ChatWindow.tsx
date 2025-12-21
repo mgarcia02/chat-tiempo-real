@@ -1,11 +1,17 @@
-import type { ChatWindowProps } from "../types/conversationTypes"
+import { useAuthContext } from "../hooks/useAuthContext"
+import { useConversations } from "../hooks/useConversations"
+import { useGlobalStore } from "../store/useGlobalStore"
 
-const ChatWindow = ({ actualUser, conversation }: ChatWindowProps) => {
+const ChatWindow = () => {
+    const { authUser: actualUser } = useAuthContext()
+    const { sendMessage } = useConversations()
+    const conversation = useGlobalStore((state) => state.selectedConversation)
+
     const receiver = conversation?.participants.find(
         (p) => p._id !== actualUser?._id
     )
-    
-    if (!conversation) return (
+
+    if (!conversation || !receiver) return (
         <div className="flex items-center justify-center h-full">
             <p>Selecciona una conversación</p>
         </div>
@@ -46,6 +52,12 @@ const ChatWindow = ({ actualUser, conversation }: ChatWindowProps) => {
                     type="text"
                     placeholder="Escribe un mensaje..."
                     className="w-full p-2 border rounded-full border-slate-400"
+                    onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                            sendMessage(e.currentTarget.value, receiver._id)
+                            e.currentTarget.value = ""
+                        }
+                    }}
                 />
                 <button>Enviar</button>
             </footer>

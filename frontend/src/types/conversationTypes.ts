@@ -16,17 +16,3 @@ export type Conversation = {
     createdAt?: string
     updatedAt?: string
 }
-
-export type SidebarProps = {
-    actualUser: User
-    conversations: Conversation[]
-    loadingConversations: boolean
-    contacts: User[]
-    loadingUsers: boolean
-    onSelectedConversation: (conv: Conversation) => void
-}
-
-export type ChatWindowProps = {
-    actualUser: User
-    conversation: Conversation | null
-}

@@ -1,13 +1,13 @@
 // hooks/useConversations.ts
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
-import { getActiveConversationsService } from "../services/conversationService"
-import type { Conversation } from "../types/conversationTypes"
+import { getActiveConversationsService, createMessageService } from "../services/conversationService"
+import { useGlobalStore } from "../store/useGlobalStore"
 
 export const useConversations = () => {
-    const [conversations, setConversations] = useState<Conversation[]>([])
+    const setConversations = useGlobalStore((state) => state.setConversations)
     const [loading, setLoading] = useState(false)
-
+    
     useEffect(() => {
         const fetchConversations = async () => {
             try {
@@ -26,7 +26,18 @@ export const useConversations = () => {
         }
 
         fetchConversations()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    return { conversations, loadingConversations: loading }
+    const sendMessage = async (message: string, receiverId: string) => {
+        try {
+            const { data, error } = await createMessageService(message, receiverId)
+            if (error) throw new Error(error)
+            console.log(data)
+        } catch (e: unknown) {
+            toast.error(e instanceof Error ? e.message : "Error desconocido")
+        }
+    }
+
+    return { loadingConversations: loading, sendMessage }
 }
