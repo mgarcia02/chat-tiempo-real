@@ -31,9 +31,8 @@ export const useConversations = () => {
 
     const sendMessage = async (message: string, receiverId: string) => {
         try {
-            const { data, error } = await createMessageService(message, receiverId)
+            const { error } = await createMessageService(message, receiverId)
             if (error) throw new Error(error)
-            console.log(data)
         } catch (e: unknown) {
             toast.error(e instanceof Error ? e.message : "Error desconocido")
         }

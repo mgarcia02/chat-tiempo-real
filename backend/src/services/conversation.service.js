@@ -6,10 +6,13 @@ export const createMessageService = async (message, receiverId, senderId) => {
     let conversation = await Conversation.findOne({
         participants: {$all: [senderId, receiverId]}
     })
+    let isNewConversation = false
+
     if(!conversation) {
         conversation = await Conversation.create({
             participants: [senderId, receiverId]
         })
+        isNewConversation = true
     }
 
     // Guarda y crea primero el mensaje
@@ -28,8 +31,18 @@ export const createMessageService = async (message, receiverId, senderId) => {
         throw mapDBErrors(error);
     }
 
+    // Obtener participantes completos
+    const populatedConversation = await conversation.populate("participants")
+    
     // Envia mensaje
-    sendMessageRealTime(senderId, receiverId, newMessage)
+    sendMessageRealTime({ 
+        message: newMessage, 
+        conversationId: conversation._id, 
+        participants: populatedConversation.participants, 
+        isNewConversation, 
+        senderId, 
+        receiverId 
+    })
 
     return newMessage
 }

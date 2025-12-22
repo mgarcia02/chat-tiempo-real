@@ -19,16 +19,30 @@ export const getSocketId = (id) => {
     return userSocketMap[id]
 }
 
-export const sendMessageRealTime = (senderId, receiverId, message) => {
-    const receiverSocketId = getSocketId(receiverId)
+export const sendMessageRealTime = ({ message, conversationId, participants, isNewConversation, senderId, receiverId }) => {
+    const receiverSocketId = getSocketId(String(receiverId))
     if (receiverSocketId) {
-        io.to(receiverSocketId).emit("newMessage", message)
+        io.to(receiverSocketId).emit("newMessage", { 
+            message: message, 
+            conversationId: conversationId, 
+            participants: participants, 
+            isNewConversation: isNewConversation 
+        })
     }
 
     // Confirmación al emisor
-    const senderSocketId = getSocketId(senderId)
+    const senderSocketId = getSocketId(String(senderId))
     if (senderSocketId) {
-        io.to(senderSocketId).emit("messageDelivered", message)
+        io.to(senderSocketId).emit("newMessage", { 
+            message: message, 
+            conversationId: conversationId, 
+            participants: participants, 
+            isNewConversation: isNewConversation 
+        })
+        io.to(senderSocketId).emit("messageDelivered", { 
+            message: message, 
+            conversationId: conversationId
+        })
     }
 }
 

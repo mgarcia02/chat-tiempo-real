@@ -1,3 +1,4 @@
+import { useState } from "react"
 import { useAuthContext } from "../hooks/useAuthContext"
 import { useConversations } from "../hooks/useConversations"
 import { useGlobalStore } from "../store/useGlobalStore"
@@ -6,16 +7,22 @@ const ChatWindow = () => {
     const { authUser: actualUser } = useAuthContext()
     const { sendMessage } = useConversations()
     const conversation = useGlobalStore((state) => state.selectedConversation)
-
     const receiver = conversation?.participants.find(
         (p) => p._id !== actualUser?._id
     )
+    const [input, setInput] = useState("")
 
     if (!conversation || !receiver) return (
         <div className="flex items-center justify-center h-full">
             <p>Selecciona una conversación</p>
         </div>
     )
+
+    const handleSend = () => { 
+        if (!input.trim()) return 
+        sendMessage(input, receiver._id) 
+        setInput("") 
+    }
 
     return (
         <div className="flex flex-col h-full">
@@ -52,14 +59,13 @@ const ChatWindow = () => {
                     type="text"
                     placeholder="Escribe un mensaje..."
                     className="w-full p-2 border rounded-full border-slate-400"
+                    value={input} 
+                    onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            sendMessage(e.currentTarget.value, receiver._id)
-                            e.currentTarget.value = ""
-                        }
+                        if (e.key === "Enter") handleSend()
                     }}
                 />
-                <button>Enviar</button>
+                <button onClick={handleSend}>Enviar</button>
             </footer>
         </div>
     )
