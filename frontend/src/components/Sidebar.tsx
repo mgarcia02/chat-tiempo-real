@@ -25,45 +25,50 @@ const Sidebar = () => {
                 </div>
             </header>
 
-            <section className="flex flex-col gap-5 px-5">
-                <h2>Chats activos</h2>
-                {conversations.map((conv) => {
-                    const receiver = conv.participants.find(
-                        (p) => p._id !== actualUser?._id
-                    )
+            {conversations.length === 0 ? "" :
+                <section className="flex flex-col gap-5 px-5">
+                    <h2>Chats activos</h2>
+                    {conversations.map((conv) => {
+                        const receiver = conv.participants.find(
+                            (p) => p._id !== actualUser?._id
+                        )
 
-                    return (
-                        <div
-                            key={conv._id}
+                        return (
+                            <div
+                                key={conv._id}
+                                className="flex items-center gap-5"
+                                onClick={() => setSelectedConversation(conv)}
+                            >
+                                <div className="w-10 h-10 rounded-full bg-slate-600"></div>
+                                <div>
+                                    <h3>{receiver?.userName}</h3>
+                                    <p className="text-xs text-gray-400">{conv.messages[conv.messages.length - 1].message}</p>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </section>
+            }
+            
+            {contacts.length === 0 ? "" :
+                <section className="flex flex-col gap-5 px-5">            
+                    <h2>Contactos</h2>
+                    {contacts.map((contact) => (
+                        <div 
+                            key={contact._id} 
                             className="flex items-center gap-5"
-                            onClick={() => setSelectedConversation(conv)}
+                            onClick={() => setSelectedConversation({
+                                participants: [contact, actualUser],
+                                messages: []
+                            })}
                         >
                             <div className="w-10 h-10 rounded-full bg-slate-600"></div>
-                            <div>
-                                <h3>{receiver?.userName}</h3>
-                                <p className="text-xs text-gray-400">{conv.messages[conv.messages.length - 1].message}</p>
-                            </div>
+                            <h3>{contact.userName}</h3>
                         </div>
-                    )
-                })}
-            </section>
-
-            <section className="flex flex-col gap-5 px-5">
-                <h2>Contactos</h2>
-                {contacts.map((contact) => (
-                    <div 
-                        key={contact._id} 
-                        className="flex items-center gap-5"
-                        onClick={() => setSelectedConversation({
-                            participants: [contact, actualUser],
-                            messages: []
-                        })}
-                    >
-                        <div className="w-10 h-10 rounded-full bg-slate-600"></div>
-                        <h3>{contact.userName}</h3>
-                    </div>
-                ))}
-            </section>
+                    ))}
+                </section>
+            }
+            
         </div>
     )
 }
