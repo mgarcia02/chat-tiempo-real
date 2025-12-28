@@ -5,7 +5,7 @@ import { ToastContainer } from 'react-toastify'
 function App() {
   return (
     <>
-      <ToastContainer />
+      <ToastContainer toastStyle={{background: "#252837", color: "#ffffff"}}/>
       <AppRouter />
     </>
   )
