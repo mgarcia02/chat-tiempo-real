@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { useAuthContext } from "../hooks/useAuthContext"
 import { useConversations } from "../hooks/useConversations"
 import { useGlobalStore } from "../store/useGlobalStore"
@@ -13,6 +13,11 @@ const ChatWindow = () => {
         (p) => p._id !== actualUser?._id
     )
     const [input, setInput] = useState("")
+    const bottomRef = useRef<HTMLDivElement | null>(null)
+
+    useEffect(() => {
+        bottomRef.current?.scrollIntoView({ behavior: "smooth" })
+    }, [conversation?._id, conversation?.messages])
 
     if (!conversation || !receiver) return (
         <div className="flex items-center justify-center h-full">
@@ -52,6 +57,7 @@ const ChatWindow = () => {
                         </li>
                     ))}
                 </ul>
+                <div ref={bottomRef} />
             </section>
 
             <footer className="flex gap-5 px-20 pb-8">
