@@ -2,6 +2,8 @@ import { useState } from "react"
 import { useAuthContext } from "../hooks/useAuthContext"
 import { useConversations } from "../hooks/useConversations"
 import { useGlobalStore } from "../store/useGlobalStore"
+import defaultAvatar from "../assets/images/default-avatar.png"
+import sendIcon from "../assets/icons/sendIcon.svg"
 
 const ChatWindow = () => {
     const { authUser: actualUser } = useAuthContext()
@@ -26,18 +28,16 @@ const ChatWindow = () => {
 
     return (
         <div className="flex flex-col h-full">
-            <header className="flex justify-between p-5 bg-slate-400">
-                <div className="flex items-center gap-5">
-                    <div className="w-10 h-10 rounded-full bg-slate-600"></div>
-                    <h3>{ receiver?.userName }</h3>
-                </div>
-                <div className="flex gap-2">
-                    <button>Buscar</button>
-                    <button>Config</button>
-                </div>
+            <header className="flex justify-center p-5 bg-[#252837] rounded-lg items-center gap-5">
+                <img
+                    src={receiver?.profilePic || defaultAvatar}
+                    alt={receiver?.userName}
+                    className="object-cover w-10 h-10 rounded-full"
+                />
+                <h3>{ receiver?.userName }</h3>
             </header>
             
-            <section className="flex-1 h-screen p-5 overflow-y-auto">
+            <section className="flex-1 h-screen p-2 mx-20 my-5 overflow-y-auto">
                 <ul className="space-y-5">
                     {conversation?.messages.map((message) => (
                         <li
@@ -45,7 +45,7 @@ const ChatWindow = () => {
                         className={`flex ${message.senderId === actualUser?._id ? "justify-end" : "justify-start"}`}
                         >
                             <div
-                                className={`max-w-md p-2 rounded shadow ${message.senderId === actualUser?._id ? "bg-blue-200" : "bg-white"}`}
+                                className={`max-w-md p-2 rounded-lg shadow ${message.senderId === actualUser?._id ? "bg-[#6785FF]" : "bg-[#303346]"}`}
                             >
                                 {message.message}
                             </div>
@@ -54,18 +54,20 @@ const ChatWindow = () => {
                 </ul>
             </section>
 
-            <footer className="flex gap-5 p-3 bg-slate-300">
+            <footer className="flex gap-5 px-20 pb-8">
                 <input
                     type="text"
                     placeholder="Escribe un mensaje..."
-                    className="w-full p-2 border rounded-full border-slate-400"
+                    className="w-full p-2 rounded-lg bg-[#252837] focus:outline-none focus:ring-1 focus:ring-[#6785FF]"
                     value={input} 
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => {
                         if (e.key === "Enter") handleSend()
                     }}
                 />
-                <button onClick={handleSend}>Enviar</button>
+                <button onClick={handleSend} className="bg-[#6785FF] p-2 rounded-lg">
+                    <img src={sendIcon} alt="Logo" className="w-auto h-5 cursor-pointer"/>
+                </button>
             </footer>
         </div>
     )

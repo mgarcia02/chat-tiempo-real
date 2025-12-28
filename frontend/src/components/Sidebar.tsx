@@ -1,6 +1,8 @@
 import { useAuthContext } from "../hooks/useAuthContext"
 import { useGlobalStore } from "../store/useGlobalStore"
 import SignOutButton from "./SignOutButton"
+import defaultAvatar from "../assets/images/default-avatar.png"
+import configIcon from "../assets/icons/configIcon.svg"
 
 const Sidebar = () => {
     const { authUser: actualUser } = useAuthContext()
@@ -17,10 +19,14 @@ const Sidebar = () => {
 
     return (
         <div className="flex flex-col gap-5">
-            <header className="flex justify-between p-5 border-r-2 bg-slate-400">
-                <div className="w-10 h-10 rounded-full bg-slate-600"></div>
-                <div className="flex gap-2">
-                    <button>Config</button>
+            <header className="flex justify-between p-5">
+                <img
+                    src={actualUser?.profilePic || defaultAvatar}
+                    alt={actualUser?.userName}
+                    className="object-cover rounded-full w-14 h-14"
+                />
+                <div className="flex gap-5">
+                    <button><img src={configIcon} alt="Logo" className="w-auto h-5 cursor-pointer"/></button>
                     <SignOutButton />
                 </div>
             </header>
@@ -36,10 +42,15 @@ const Sidebar = () => {
                         return (
                             <div
                                 key={conv._id}
-                                className="flex items-center gap-5"
+                                className="flex items-center gap-5 bg-[#303346] p-5 rounded-lg cursor-pointer hover:bg-[#6785FF] transition-colors duration-500"
                                 onClick={() => setSelectedConversation(conv)}
                             >
-                                <div className="w-10 h-10 rounded-full bg-slate-600"></div>
+                                <img
+                                    src={receiver?.profilePic || defaultAvatar}
+                                    alt={receiver?.userName}
+                                    className="object-cover w-10 h-10 rounded-full"
+                                />
+
                                 <div>
                                     <h3>{receiver?.userName}</h3>
                                     <p className="text-xs text-gray-400">{conv.messages[conv.messages.length - 1].message}</p>
@@ -56,13 +67,17 @@ const Sidebar = () => {
                     {contacts.map((contact) => (
                         <div 
                             key={contact._id} 
-                            className="flex items-center gap-5"
+                            className="flex items-center gap-5 bg-[#303346] p-5 rounded-lg cursor-pointer hover:bg-[#6785FF] transition-colors duration-500"
                             onClick={() => setSelectedConversation({
                                 participants: [contact, actualUser],
                                 messages: []
                             })}
                         >
-                            <div className="w-10 h-10 rounded-full bg-slate-600"></div>
+                            <img
+                                src={contact?.profilePic || defaultAvatar}
+                                alt={contact?.userName}
+                                className="object-cover w-10 h-10 rounded-full"
+                            />
                             <h3>{contact.userName}</h3>
                         </div>
                     ))}

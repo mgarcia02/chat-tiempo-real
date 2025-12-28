@@ -19,11 +19,11 @@ const Home = () => {
     }
     
     return (
-        <div className="flex w-full h-screen">
-            <aside className="flex-1 bg-slate-100">
+        <div className="flex w-full h-screen bg-[#1D1F2B] text-slate-200">
+            <aside className="flex-1 bg-[#252837] m-2 rounded-lg">
                 <Sidebar />
             </aside>
-            <main className="bg-slate-200 flex-[2]">
+            <main className=" flex-[2] m-2">
                 <ChatWindow />
             </main>
         </div>
