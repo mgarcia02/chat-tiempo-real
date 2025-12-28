@@ -9,10 +9,11 @@ const Sidebar = () => {
     const conversations = useGlobalStore((state) => state.conversations)
     const users = useGlobalStore((state) => state.users)
     const setSelectedConversation = useGlobalStore((state) => state.setSelectedConversation)
+    const selectedConversation = useGlobalStore((state) => state.selectedConversation)
 
     if (!actualUser || !conversations || !users) return <p>Loading...</p>
 
-    // IDs de los usuarios con los que ya tienes conversación
+    // IDs de los usuarios con los que ya existe conversación
     const activeConversations = new Set(conversations.map((conv) => conv.participants.find((p) => p._id !== actualUser?._id)?._id))
     // Filtrar usuarios que no están en conversaciones activas
     const contacts = users.filter(u => !activeConversations.has(u._id))
@@ -39,10 +40,13 @@ const Sidebar = () => {
                             (p) => p._id !== actualUser?._id
                         )
 
+                        // Verificar si la conversación actual es la seleccionada
+                        const isSelected = selectedConversation?._id === conv._id
+
                         return (
                             <div
                                 key={conv._id}
-                                className="flex items-center gap-5 bg-[#303346] p-5 rounded-lg cursor-pointer hover:bg-[#6785FF] transition-colors duration-500"
+                                className={`flex items-center gap-5 p-5 rounded-lg cursor-pointer transition-colors duration-500 ${isSelected ? "bg-[#6785FF]" : "bg-[#303346] hover:bg-[#6785FF]"} `}
                                 onClick={() => setSelectedConversation(conv)}
                             >
                                 <img
@@ -62,26 +66,33 @@ const Sidebar = () => {
             }
             
             {contacts.length === 0 ? "" :
-                <section className="flex flex-col gap-5 px-5">            
-                    <h2>Contactos</h2>
-                    {contacts.map((contact) => (
+                <section className="flex flex-col gap-5 px-5">
+                <h2>Contactos</h2>
+
+                {contacts.map((contact) => {
+
+                    // Verificar si la conversación actual es la seleccionada
+                    const isSelected = selectedConversation && selectedConversation.participants.some(
+                        (p) => p._id === contact._id
+                    )
+
+                    return (
                         <div 
                             key={contact._id} 
-                            className="flex items-center gap-5 bg-[#303346] p-5 rounded-lg cursor-pointer hover:bg-[#6785FF] transition-colors duration-500"
-                            onClick={() => setSelectedConversation({
-                                participants: [contact, actualUser],
-                                messages: []
-                            })}
+                            className={`flex items-center gap-5 p-5 rounded-lg cursor-pointer transition-colors duration-500 ${isSelected ? "bg-[#6785FF]" : "bg-[#303346] hover:bg-[#6785FF]"} `}
+                            onClick={() =>
+                                setSelectedConversation({
+                                    participants: [contact, actualUser],
+                                    messages: []
+                                })
+                            }
                         >
-                            <img
-                                src={contact?.profilePic || defaultAvatar}
-                                alt={contact?.userName}
-                                className="object-cover w-10 h-10 rounded-full"
-                            />
+                            <img src={contact.profilePic || defaultAvatar} alt={contact.userName} className="object-cover w-10 h-10 rounded-full" />
                             <h3>{contact.userName}</h3>
                         </div>
-                    ))}
-                </section>
+                    )
+                })}
+            </section>
             }
             
         </div>
