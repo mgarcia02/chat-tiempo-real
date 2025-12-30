@@ -19,7 +19,7 @@ const Sidebar = () => {
     const contacts = users.filter(u => !activeConversations.has(u._id))
 
     return (
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col h-full gap-5">
             <header className="flex justify-between p-5">
                 <img
                     src={actualUser?.profilePic || defaultAvatar}
@@ -32,9 +32,10 @@ const Sidebar = () => {
                 </div>
             </header>
 
+            <h2 className="px-5 text-[#6785FF] font-medium text-lg">Chats activos</h2>
             {conversations.length === 0 ? "" :
-                <section className="flex flex-col gap-5 px-5">
-                    <h2>Chats activos</h2>
+                <section className="flex flex-col px-5 gap-5 overflow-y-auto max-h-[38%]">
+                    
                     {conversations.map((conv) => {
                         const receiver = conv.participants.find(
                             (p) => p._id !== actualUser?._id
@@ -65,36 +66,33 @@ const Sidebar = () => {
                 </section>
             }
             
+            <h2 className="px-5 text-[#6785FF] font-medium text-lg">Contactos</h2>
             {contacts.length === 0 ? "" :
-                <section className="flex flex-col gap-5 px-5">
-                <h2>Contactos</h2>
+                <section className="flex flex-col gap-5 px-5 overflow-y-auto max-h-[38%]">
+                    {contacts.map((contact) => {
+                        // Verificar si la conversación actual es la seleccionada
+                        const isSelected = selectedConversation && selectedConversation.participants.some(
+                            (p) => p._id === contact._id
+                        )
 
-                {contacts.map((contact) => {
-
-                    // Verificar si la conversación actual es la seleccionada
-                    const isSelected = selectedConversation && selectedConversation.participants.some(
-                        (p) => p._id === contact._id
-                    )
-
-                    return (
-                        <div 
-                            key={contact._id} 
-                            className={`flex items-center gap-5 p-5 rounded-lg cursor-pointer transition-colors duration-500 ${isSelected ? "bg-[#6785FF]" : "bg-[#303346] hover:bg-[#6785FF]"} `}
-                            onClick={() =>
-                                setSelectedConversation({
-                                    participants: [contact, actualUser],
-                                    messages: []
-                                })
-                            }
-                        >
-                            <img src={contact.profilePic || defaultAvatar} alt={contact.userName} className="object-cover w-10 h-10 rounded-full" />
-                            <h3>{contact.userName}</h3>
-                        </div>
-                    )
-                })}
-            </section>
+                        return (
+                            <div 
+                                key={contact._id} 
+                                className={`flex items-center gap-5 p-5 rounded-lg cursor-pointer transition-colors duration-500 ${isSelected ? "bg-[#6785FF]" : "bg-[#303346] hover:bg-[#6785FF]"} `}
+                                onClick={() =>
+                                    setSelectedConversation({
+                                        participants: [contact, actualUser],
+                                        messages: []
+                                    })
+                                }
+                            >
+                                <img src={contact.profilePic || defaultAvatar} alt={contact.userName} className="object-cover w-10 h-10 rounded-full" />
+                                <h3>{contact.userName}</h3>
+                            </div>
+                        )
+                    })}
+                </section>
             }
-            
         </div>
     )
 }
